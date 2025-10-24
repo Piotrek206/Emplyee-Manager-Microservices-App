@@ -1,16 +1,20 @@
 package com.microservice.employee_service.service;
 
+import com.microservice.employee_service.dto.APIResponseDto;
 import com.microservice.employee_service.dto.EmployeeDto;
 
 import java.util.List;
 
 public interface EmployeeService {
 
-    public List<EmployeeDto> findAll();
+    List<EmployeeDto> findAll();
 
-    public EmployeeDto findById(Long departmentId);
+    APIResponseDto findById(Long departmentId);
 
-    public EmployeeDto saveEmployee(EmployeeDto departmentDto);
+    EmployeeDto findEmployeeDtoById(Long id);
 
-    public EmployeeDto findByEmail(String email);
+    EmployeeDto findByEmail(String email);
+
+    EmployeeDto saveEmployee(EmployeeDto departmentDto);
+
 }

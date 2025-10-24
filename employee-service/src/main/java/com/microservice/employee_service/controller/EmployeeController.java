@@ -1,6 +1,8 @@
 package com.microservice.employee_service.controller;
 
+import com.microservice.employee_service.dto.APIResponseDto;
 import com.microservice.employee_service.dto.EmployeeDto;
+import com.microservice.employee_service.exception.DepartmentNotFoundException;
 import com.microservice.employee_service.exception.EmployeeNotFoundException;
 import com.microservice.employee_service.exception.EmployeeSaveException;
 import com.microservice.employee_service.service.EmployeeService;
@@ -27,14 +29,21 @@ public class EmployeeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<EmployeeDto> findById(@PathVariable Long id) {
+    public ResponseEntity<APIResponseDto> findById(@PathVariable Long id) {
         log.info("Received request: findById with id {}", id);
         try {
-            EmployeeDto employee = employeeService.findById(id);
-            return ResponseEntity.ok(employee);
+            APIResponseDto apiResponseDto = employeeService.findById(id);
+            return ResponseEntity.ok(apiResponseDto);
         } catch (EmployeeNotFoundException ex) {
             log.error("Employee not found: {}", ex.getMessage());
             return ResponseEntity.notFound().build();
+        } catch (DepartmentNotFoundException ex) {
+            log.warn("Department not found for employee id: {}", id);
+            APIResponseDto response = APIResponseDto.builder()
+                    .employeeDto(employeeService.findEmployeeDtoById(id))
+                    .departmentDto(null)
+                    .build();
+            return ResponseEntity.ok(response);
         }
     }
 
